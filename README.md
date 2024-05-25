@@ -1,1 +1,9 @@
-# event_manager
+## Event Manager
+Tag line...
+
+[![Run on Repl.it](https://replit.com/badge/github/ejmiranda/event_manager)]()
+
+**Description:**
+- From The Odin Project's [Curriculum](https://www.theodinproject.com/lessons/ruby-event-manager).
+- ...
+- ...
