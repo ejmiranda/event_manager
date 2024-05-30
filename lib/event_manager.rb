@@ -61,7 +61,5 @@ content.each do |row|
 
   form_letter = erb_template.result(binding)
 
-  puts phone_number
-
-  # save_thank_you_letter(id, form_letter)
+  save_thank_you_letter(id, form_letter)
 end

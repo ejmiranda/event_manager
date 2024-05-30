@@ -26,5 +26,10 @@
       <td><%= "#{legislators}" %></td>
     <% end %>
   </table>
+  <% if phone_number == 'Bad Number' %>
+    <p>You can sign up for mobile alerts at https://www.signup.com</p>
+  <% else %>
+    <p>You've signed up to receive mobile alerts at 1-<%= phone_number %></p>
+  <% end %>
 </body>
 </html>
