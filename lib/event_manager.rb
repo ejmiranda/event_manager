@@ -4,7 +4,7 @@ require 'csv'
 require 'google/apis/civicinfo_v2'
 require 'erb'
 
-def format_zipcode(zipcode, digits)
+def clean_zipcode(zipcode, digits)
   zipcode.to_s.rjust(digits, '0')[0..digits - 1]
 end
 
@@ -19,6 +19,17 @@ def legislators_by_zipcode(zipcode) # rubocop:disable Metrics/MethodLength
     ).officials
   rescue StandardError
     'You can find your representatives by visiting www.commoncause.org/take-action/find-elected-officials'
+  end
+end
+
+def clean_phone_number(phone_number)
+  phone_number = phone_number.split('').select { |char| /\d+/.match?(char) }.join
+  phone_number = phone_number[1..] if phone_number[0] == '1'
+  if phone_number.size != 10
+    'Bad Number'
+  else
+    [3, 7].each { |idx| phone_number.insert(idx, '-') }
+    phone_number
   end
 end
 
@@ -44,10 +55,13 @@ erb_template = ERB.new template_letter
 content.each do |row|
   id = row[0]
   name = row[:first_name]
-  zipcode = format_zipcode(row[:zipcode], 5)
+  zipcode = clean_zipcode(row[:zipcode], 5)
   legislators = legislators_by_zipcode(zipcode)
+  phone_number = clean_phone_number(row[:homephone])
 
   form_letter = erb_template.result(binding)
 
-  save_thank_you_letter(id, form_letter)
+  puts phone_number
+
+  # save_thank_you_letter(id, form_letter)
 end
