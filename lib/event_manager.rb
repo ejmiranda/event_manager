@@ -28,7 +28,9 @@ def clean_phone_number(phone_number)
   if phone_number.size != 10
     'Bad Number'
   else
-    [3, 7].each { |idx| phone_number.insert(idx, '-') }
+    phone_number.insert(0, '(')
+    phone_number.insert(4, ')')
+    phone_number.insert(8, '-')
     phone_number
   end
 end
