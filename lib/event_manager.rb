@@ -3,6 +3,7 @@
 require 'csv'
 require 'google/apis/civicinfo_v2'
 require 'erb'
+require 'time'
 
 def clean_zipcode(zipcode, digits)
   zipcode.to_s.rjust(digits, '0')[0..digits - 1]
@@ -54,14 +55,28 @@ content = CSV.open(
 template_letter = File.read('form_letter.erb')
 erb_template = ERB.new template_letter
 
+reg_times = []
+
 content.each do |row|
   id = row[0]
   name = row[:first_name]
   zipcode = clean_zipcode(row[:zipcode], 5)
   legislators = legislators_by_zipcode(zipcode)
   phone_number = clean_phone_number(row[:homephone])
-
   form_letter = erb_template.result(binding)
 
-  save_thank_you_letter(id, form_letter)
+  reg_times << Time.strptime(row[:regdate], '%m/%d/%y %H:%M')
+
+  # Uncomment the line below to save the HTML letters to /output
+  # save_thank_you_letter(id, form_letter)
 end
+
+def highest_reg_hours(reg_times)
+  hours = reg_times.map(&:hour)
+  highest_reg_hours = hours.each_with_object({}) do |hour, count|
+    count[hour] = hours.count(hour)
+  end
+  (highest_reg_hours.sort_by { |_key, value| value }).reverse.to_h
+end
+
+p highest_reg_hours(reg_times)
