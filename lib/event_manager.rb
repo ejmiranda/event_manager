@@ -44,7 +44,7 @@ def save_thank_you_letter(id, form_letter)
   end
 end
 
-puts 'EventManager initialized.'
+puts "\nEventManager initialized."
 
 content = CSV.open(
   'event_attendees.csv',
@@ -71,12 +71,22 @@ content.each do |row|
   # save_thank_you_letter(id, form_letter)
 end
 
-def highest_reg_hours(reg_times)
-  hours = reg_times.map(&:hour)
-  highest_reg_hours = hours.each_with_object({}) do |hour, count|
-    count[hour] = hours.count(hour)
+def highest_entries(arr)
+  counted_arr = arr.each_with_object({}) do |entry, count|
+    count[entry] = arr.count(entry)
   end
-  (highest_reg_hours.sort_by { |_key, value| value }).reverse.to_h
+  (counted_arr.sort_by { |_key, value| value }).reverse.to_h
 end
 
-p highest_reg_hours(reg_times)
+puts "\nHighest Registration Hours\n\n"
+hrh = highest_entries(reg_times.map(&:hour))
+hrh.each do |hour, qty| # hrh is a Hash, so hour = key and qty = value
+  time = Time.new(1977, 5, 25, hour, 0, 0)
+  puts "#{time.strftime('%I %p')}: #{qty}"
+end
+
+puts "\nHighest Registration Days\n\n"
+hrd = highest_entries(reg_times.map(&:wday))
+hrd.each do |wday, qty| # hrd is a Hash, so wday = key and qty = value
+  puts "#{Date::DAYNAMES[wday]}: #{qty}"
+end
